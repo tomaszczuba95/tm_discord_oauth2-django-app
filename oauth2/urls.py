@@ -25,5 +25,6 @@ urlpatterns = [
     path('oauth2/login/redirect',
          views.discord_login_redirect, name="discord_redirect"),
     path('oauth2/logintm/redirect',
-         views.trackmania_login_redirected, name="tm_redirect")
+         views.trackmania_login_redirected, name="tm_redirect"),
+    path('oauth2/test', views.testowanko, name="test"),
 ]

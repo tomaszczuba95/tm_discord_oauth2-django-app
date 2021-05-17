@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 import requests
+import base64
 # Create your views here.
 
 auth_url_discord = "https://discord.com/api/oauth2/authorize?client_id=843491042708029451&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2%2Flogin%2Fredirect&response_type=code&scope=identify"
@@ -99,3 +100,18 @@ def exchange_code_trackmania(code: str):
     # })
     # mm_info = response_matchmaking.json()
     return user
+
+
+def testowanko(request):
+    headers = {
+        "Ubi-AppId": "86263886-327a-4328-ac69-527f0d20a237",
+        "Authorization": "Basic " + base64.b64encode(b'tomaszdjangoapp@gmail.com:Trackmania123').decode(),
+    }
+    print(headers)
+    ubi_response = requests.post(
+        "https://public-ubiservices.ubi.com/v3/profiles/sessions",
+        headers=headers
+    )
+    print(ubi_response)
+    test = ubi_response.json()
+    return JsonResponse({"UPLAY": test})
