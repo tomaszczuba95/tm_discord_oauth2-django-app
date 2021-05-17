@@ -11,13 +11,11 @@ auth_url_tm = "https://api.trackmania.com/oauth/authorize?client_id=28dcbb39593f
 def home(request):
     return JsonResponse({"msg": "Siema"})
 
+# DISCORD
+
 
 def discord_login(request: HttpRequest):
     return redirect(auth_url_discord)
-
-
-def trackmania_login(request: HttpRequest):
-    return redirect(auth_url_tm)
 
 
 def discord_login_redirect(request):
@@ -25,15 +23,6 @@ def discord_login_redirect(request):
     print(code)
     user = exchange_code_discord(code)
     return JsonResponse({"user": user, 'YOUR NAME': user['username']})
-
-
-def trackmania_login_redirected(request):
-    code = request.GET.get('code')
-    print(code)
-    state = request.GET.get('state')
-    print(state)
-    usertm = exchange_code_trackmania(code)
-    return JsonResponse({"gracz tm": usertm})
 
 
 def exchange_code_discord(code: str):
@@ -62,6 +51,21 @@ def exchange_code_discord(code: str):
     print(user)
     return user
 
+# TRACKMANIA
+
+
+def trackmania_login(request: HttpRequest):
+    return redirect(auth_url_tm)
+
+
+def trackmania_login_redirected(request):
+    code = request.GET.get('code')
+    print(code)
+    state = request.GET.get('state')
+    print(state)
+    usertm = exchange_code_trackmania(code)
+    return JsonResponse({"gracz tm": usertm})
+
 
 def exchange_code_trackmania(code: str):
     data = {
@@ -75,6 +79,8 @@ def exchange_code_trackmania(code: str):
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
     }
+    # https://api.trackmania.com/doc
+    # This response gives me account_id and display_name.
     response = requests.post(
         "https://api.trackmania.com/api/access_token", data=data, headers=headers)
     print(response)
@@ -83,7 +89,13 @@ def exchange_code_trackmania(code: str):
     response = requests.get("https://api.trackmania.com/api/user", headers={
         'Authorization': 'Bearer %s' % access_token
     })
+
     print(response)
     user = response.json()
     print(user)
+    # Can we get data from matchmaking api using api.trackmania.com?
+    # response_matchmaking = requests.get("https://matchmaking.trackmania.nadeo.club/api/matchmaking/2/leaderboard/players?players[]=" + user['account_id'], headers={
+    #    'Authorization': 'Bearer %s' % access_token
+    # })
+    # mm_info = response_matchmaking.json()
     return user
