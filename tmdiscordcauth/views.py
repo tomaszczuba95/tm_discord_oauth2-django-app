@@ -3,10 +3,15 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 import requests
 import base64
+import os
 # Create your views here.
 
-auth_url_discord = "https://discord.com/api/oauth2/authorize?client_id=843491042708029451&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2%2Flogin%2Fredirect&response_type=code&scope=identify"
-auth_url_tm = "https://api.trackmania.com/oauth/authorize?client_id=28dcbb39593f423da915&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2%2Flogintm%2Fredirect&response_type=code&scope=&state=test"
+auth_url_discord = "https://discord.com/api/oauth2/authorize?client_id=" + \
+    os.environ['DISCORD_CLIENT_ID'] + \
+    "&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2%2Flogin%2Fredirect&response_type=code&scope=identify"
+auth_url_tm = "https://api.trackmania.com/oauth/authorize?client_id=" + \
+    os.environ['TRACKMANIA_API_ID'] + \
+    "&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2%2Flogintm%2Fredirect&response_type=code&scope=&state=test"
 
 
 def home(request):
@@ -29,8 +34,8 @@ def discord_login_redirect(request):
 def exchange_code_discord(code: str):
     data = {
         # https://discord.com/developers/applications
-        "client_id": "843491042708029451",
-        "client_secret": "AQoufMHsUDMdCaQxUlmfpV6VEtstTZhU",
+        "client_id": os.environ['DISCORD_CLIENT_ID'],
+        "client_secret": os.environ['DISCORD_CLIENT_SECRET'],
         "grant_type": "authorization_code",
         "code": code,
         "redirect_uri": "http://localhost:8000/oauth2/login/redirect",
@@ -72,8 +77,8 @@ def exchange_code_trackmania(code: str):
     data = {
         # https://doc.trackmania.com/web-services/auth/
         "grant_type": "authorization_code",
-        "client_id": "28dcbb39593f423da915",
-        "client_secret": "69b8957caca2bba8e9e74f4472ec0e258c5ff3ce",
+        "client_id": os.environ['TRACKMANIA_API_ID'],
+        "client_secret": os.environ['TRACKMANIA_API_SECRET'],
         "code": code,
         "redirect_uri": "http://localhost:8000/oauth2/logintm/redirect",
     }
@@ -104,8 +109,10 @@ def exchange_code_trackmania(code: str):
 
 def testowanko(request):
     headers = {
-        "Ubi-AppId": "86263886-327a-4328-ac69-527f0d20a237",
         "Authorization": "Basic " + base64.b64encode(b'tomaszdjangoapp@gmail.com:Trackmania123').decode(),
+        "Content-Type": "application/json",
+        "Ubi-AppId": "86263886-327a-4328-ac69-527f0d20a237",
+        "Ubi-RequestedPlatformType": "uplay",
     }
     print(headers)
     ubi_response = requests.post(
