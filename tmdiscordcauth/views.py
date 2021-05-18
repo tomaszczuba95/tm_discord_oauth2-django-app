@@ -86,7 +86,7 @@ def exchange_code_trackmania(code: str):
         "Content-Type": "application/x-www-form-urlencoded"
     }
     # https://api.trackmania.com/doc
-    # This response gives me account_id and display_name.
+    # JSON: account_id and display_name.
     response = requests.post(
         "https://api.trackmania.com/api/access_token", data=data, headers=headers)
     print(response)
@@ -95,19 +95,20 @@ def exchange_code_trackmania(code: str):
     response = requests.get("https://api.trackmania.com/api/user", headers={
         'Authorization': 'Bearer %s' % access_token
     })
-
     print(response)
     user = response.json()
     print(user)
-    # Can we get data from matchmaking api using api.trackmania.com?
-    # response_matchmaking = requests.get("https://matchmaking.trackmania.nadeo.club/api/matchmaking/2/leaderboard/players?players[]=" + user['account_id'], headers={
-    #    'Authorization': 'Bearer %s' % access_token
-    # })
-    # mm_info = response_matchmaking.json()
     return user
 
 
-def testowanko(request):
+def nadeo_services_access(request):
+    ubi_ticket = ubiservices_level0()
+    print(ubi_ticket)
+    # nadeo_accesstoken(ubi_ticket['ubi_v1'])
+    return JsonResponse({"data": ubi_ticket})
+
+
+def ubiservices_level0():
     headers = {
         "Authorization": "Basic " + base64.b64encode(b'tomaszdjangoapp@gmail.com:Trackmania123').decode(),
         "Content-Type": "application/json",
@@ -116,9 +117,18 @@ def testowanko(request):
     }
     print(headers)
     ubi_response = requests.post(
-        "https://public-ubiservices.ubi.com/v3/profiles/sessions",
+        "https://public-ubiservices.ubi.com/v3/profiles/sessions.json",
         headers=headers
     )
     print(ubi_response)
-    test = ubi_response.json()
-    return JsonResponse({"UPLAY": test})
+    return ubi_response.json()
+
+
+def nadeo_accesstoken(ticket):
+    headers = {
+        "Authorization": ticket
+    }
+    nadeo_accesstoken = requests.post(
+        "https://prod.trackmania.core.nadeo.online/v2/authentication/token/ubiservides", headers=headers
+    )
+    return nadeo_accesstoken.json()
