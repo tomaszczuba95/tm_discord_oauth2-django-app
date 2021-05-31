@@ -4,6 +4,8 @@ from django.shortcuts import redirect
 import requests
 import base64
 import os
+import http.client
+import json
 # Create your views here.
 
 auth_url_discord = "https://discord.com/api/oauth2/authorize?client_id=" + \
@@ -104,31 +106,47 @@ def exchange_code_trackmania(code: str):
 def nadeo_services_access(request):
     ubi_ticket = ubiservices_level0()
     print(ubi_ticket)
-    # nadeo_accesstoken(ubi_ticket['ubi_v1'])
-    return JsonResponse({"data": ubi_ticket})
+    nadeo_token = nadeo_accesstoken_level1(ubi_ticket)
+    print(nadeo_token['accessToken'])
+    services = nadeo_services(nadeo_token['accessToken'])
+    return JsonResponse({"level 0 ticket": ubi_ticket, "level 1 ticket": nadeo_token, "level 2 services": services})
 
 
 def ubiservices_level0():
+    conn = http.client.HTTPSConnection("public-ubiservices.ubi.com")
+    payload = ""
     headers = {
-        "Authorization": "Basic " + base64.b64encode(b'tomaszdjangoapp@gmail.com:Trackmania123').decode(),
-        "Content-Type": "application/json",
-        "Ubi-AppId": "86263886-327a-4328-ac69-527f0d20a237",
-        "Ubi-RequestedPlatformType": "uplay",
+        'Content-Type': 'application/json',
+        # 'Basic base64.b64encode(b'email:password').decode()',
+        'Authorization': 'Basic dG9tYXN6ZGphbmdvYXBwQGdtYWlsLmNvbTpUcmFja21hbmlhMTIz',
+        'Ubi-AppId': '86263886-327a-4328-ac69-527f0d20a237'
     }
-    print(headers)
-    ubi_response = requests.post(
-        "https://public-ubiservices.ubi.com/v3/profiles/sessions.json",
-        headers=headers
-    )
-    print(ubi_response)
-    return ubi_response.json()
+    conn.request("POST", "/v3/profiles/sessions", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    decoded_data = data.decode("utf-8")
+    response = json.loads(decoded_data)
+    return response['ticket']
 
 
-def nadeo_accesstoken(ticket):
+def nadeo_accesstoken_level1(ticket):
     headers = {
-        "Authorization": ticket
+        "Authorization": "ubi_v1 t=" + ticket
     }
     nadeo_accesstoken = requests.post(
-        "https://prod.trackmania.core.nadeo.online/v2/authentication/token/ubiservides", headers=headers
+        "https://prod.trackmania.core.nadeo.online/v2/authentication/token/ubiservices", headers=headers
     )
     return nadeo_accesstoken.json()
+
+
+def nadeo_services(token):
+    payload = {
+        'audience': 'NadeoClubServices'
+    }
+    headers = {
+        "Authorization": "nadeo_v1 t=" + token,
+    }
+    nadeo_services = requests.post(
+        "https://prod.trackmania.core.nadeo.online/v2/authentication/token/nadeoservices", headers=headers, data=payload
+    )
+    return nadeo_services.json()
