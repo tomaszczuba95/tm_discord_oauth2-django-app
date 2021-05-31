@@ -26,5 +26,4 @@ urlpatterns = [
          views.discord_login_redirect, name="discord_redirect"),
     path('oauth2/logintm/redirect',
          views.trackmania_login_redirected, name="tm_redirect"),
-    path('oauth2/test', views.nadeo_services_access, name="test"),
 ]

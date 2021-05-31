@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
+from django.contrib.auth import authenticate, login
 import requests
 import base64
 import os
@@ -30,6 +31,7 @@ def discord_login_redirect(request):
     code = request.GET.get('code')
     print(code)
     user = exchange_code_discord(code)
+    authenticate(request, user=user)
     return JsonResponse({"user": user, 'YOUR NAME': user['username']})
 
 
@@ -103,7 +105,7 @@ def exchange_code_trackmania(code: str):
     return user
 
 
-def nadeo_services_access(request):
+"""def nadeo_services_access(request):
     ubi_ticket = ubiservices_level0()
     print(ubi_ticket)
     nadeo_token = nadeo_accesstoken_level1(ubi_ticket)
@@ -149,4 +151,4 @@ def nadeo_services(token):
     nadeo_services = requests.post(
         "https://prod.trackmania.core.nadeo.online/v2/authentication/token/nadeoservices", headers=headers, data=payload
     )
-    return nadeo_services.json()
+    return nadeo_services.json()"""
