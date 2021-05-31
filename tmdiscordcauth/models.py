@@ -1,9 +1,11 @@
 from django.db import models
-
+from .managers import DiscordUserAuthManager
 # Create your models here.
 
 
 class DiscordUser(models.Model):
+    objects = DiscordUserAuthManager()
+
     discord_id = models.BigIntegerField(primary_key=True)
     username = models.CharField(max_length=100)
     last_login = models.DateTimeField(auto_now=True)
