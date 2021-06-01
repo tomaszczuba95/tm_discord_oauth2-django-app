@@ -19,6 +19,8 @@ from tmdiscordcauth import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('auth/user', views.get_authenticated_user,
+         name='get_authenticated_user'),
     path('oauth2', views.home, name="oauth2"),
     path('oauth2/login', views.discord_login, name="oauth_discord_login"),
     path('oauth2/logintm', views.trackmania_login, name="oauth_tm_login"),

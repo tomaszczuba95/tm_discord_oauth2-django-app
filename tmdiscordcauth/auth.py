@@ -1,5 +1,5 @@
 from django.contrib.auth.backends import BaseBackend
-from .models import DiscordUser
+from .models import DiscordUser, TrackmaniaUser
 
 
 class DiscordAuthBackend(BaseBackend):
@@ -11,3 +11,9 @@ class DiscordAuthBackend(BaseBackend):
             print(new_user)
             return new_user
         return find_user
+
+    def get_user(self, user_id):
+        try:
+            return DiscordUser.objects.get(pk=user_id)
+        except DiscordUser.DoesNotExist:
+            return None

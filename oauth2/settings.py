@@ -132,5 +132,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom Django Authentication
 AUTHENTICATION_BACKENDS = [
-    'tmdiscordcauth.auth.DiscordAuthBackend'
+    'tmdiscordcauth.auth.DiscordAuthBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
 ]

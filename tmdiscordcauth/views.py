@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from .models import DiscordUser, TrackmaniaUser
 import requests
 import base64
 import os
@@ -23,6 +25,11 @@ def home(request):
 # DISCORD
 
 
+@login_required(login_url="/oauth2/login")
+def get_authenticated_user(request):
+    return JsonResponse({"msg": "Authenticated", "user": request.user.discord_id})
+
+
 def discord_login(request: HttpRequest):
     return redirect(auth_url_discord)
 
@@ -31,8 +38,11 @@ def discord_login_redirect(request):
     code = request.GET.get('code')
     print(code)
     user = exchange_code_discord(code)
-    authenticate(request, user=user)
-    return JsonResponse({"user": user, 'YOUR NAME': user['username']})
+    discord_user = authenticate(request, user=user)
+    discord_user = list(discord_user).pop()
+    login(request, discord_user)
+    # db_connections =
+    return redirect(trackmania_login)
 
 
 def exchange_code_discord(code: str):
@@ -64,6 +74,7 @@ def exchange_code_discord(code: str):
 # TRACKMANIA
 
 
+@login_required(login_url="/oauth2/login")
 def trackmania_login(request: HttpRequest):
     return redirect(auth_url_tm)
 
@@ -74,7 +85,12 @@ def trackmania_login_redirected(request):
     state = request.GET.get('state')
     print(state)
     usertm = exchange_code_trackmania(code)
-    return JsonResponse({"gracz tm": usertm})
+    user_id = [request.user.discord_id]
+    print("user id: ", user_id)
+    user = request.user
+    new_tm_user = TrackmaniaUser.objects.create_new_trackmania_user(request,
+                                                                    usertm)
+    return JsonResponse({"gracz tm": usertm, "user": request.user.discord_id})
 
 
 def exchange_code_trackmania(code: str):
@@ -103,52 +119,3 @@ def exchange_code_trackmania(code: str):
     user = response.json()
     print(user)
     return user
-
-
-"""def nadeo_services_access(request):
-    ubi_ticket = ubiservices_level0()
-    print(ubi_ticket)
-    nadeo_token = nadeo_accesstoken_level1(ubi_ticket)
-    print(nadeo_token['accessToken'])
-    services = nadeo_services(nadeo_token['accessToken'])
-    return JsonResponse({"level 0 ticket": ubi_ticket, "level 1 ticket": nadeo_token, "level 2 services": services})
-
-
-def ubiservices_level0():
-    conn = http.client.HTTPSConnection("public-ubiservices.ubi.com")
-    payload = ""
-    headers = {
-        'Content-Type': 'application/json',
-        # 'Basic base64.b64encode(b'email:password').decode()',
-        'Authorization': 'Basic dG9tYXN6ZGphbmdvYXBwQGdtYWlsLmNvbTpUcmFja21hbmlhMTIz',
-        'Ubi-AppId': '86263886-327a-4328-ac69-527f0d20a237'
-    }
-    conn.request("POST", "/v3/profiles/sessions", payload, headers)
-    res = conn.getresponse()
-    data = res.read()
-    decoded_data = data.decode("utf-8")
-    response = json.loads(decoded_data)
-    return response['ticket']
-
-
-def nadeo_accesstoken_level1(ticket):
-    headers = {
-        "Authorization": "ubi_v1 t=" + ticket
-    }
-    nadeo_accesstoken = requests.post(
-        "https://prod.trackmania.core.nadeo.online/v2/authentication/token/ubiservices", headers=headers
-    )
-    return nadeo_accesstoken.json()
-
-
-def nadeo_services(token):
-    payload = {
-        'audience': 'NadeoClubServices'
-    }
-    headers = {
-        "Authorization": "nadeo_v1 t=" + token,
-    }
-    nadeo_services = requests.post(
-        "https://prod.trackmania.core.nadeo.online/v2/authentication/token/nadeoservices", headers=headers, data=payload
-    )
-    return nadeo_services.json()"""
