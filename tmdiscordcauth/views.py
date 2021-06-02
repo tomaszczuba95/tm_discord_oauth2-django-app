@@ -17,6 +17,7 @@ auth_url_discord = "https://discord.com/api/oauth2/authorize?client_id=" + \
 auth_url_tm = "https://api.trackmania.com/oauth/authorize?client_id=" + \
     os.environ['TRACKMANIA_API_ID'] + \
     "&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2%2Flogintm%2Fredirect&response_type=code&scope=&state=test"
+redirect_main_url = "http://127.0.0.1:8000/oauth2/login/redirect"
 
 
 def home(request):
@@ -41,8 +42,18 @@ def discord_login_redirect(request):
     discord_user = authenticate(request, user=user)
     discord_user = list(discord_user).pop()
     login(request, discord_user)
+
+    find_relation = TrackmaniaUser.objects.filter(linked_discord=request.user)
+    if len(find_relation) == 0:
+        is_related = False
+    else:
+        is_related = True
+        find_relation = list(find_relation).pop()
     # db_connections =
-    return redirect(trackmania_login)
+    # return redirect(trackmania_login)
+    return render(request, 'base.html', {'discord_user': discord_user,
+                                         'is_related': is_related,
+                                         'find_relation': find_relation})
 
 
 def exchange_code_discord(code: str):
@@ -90,7 +101,8 @@ def trackmania_login_redirected(request):
     user = request.user
     new_tm_user = TrackmaniaUser.objects.create_new_trackmania_user(request,
                                                                     usertm)
-    return JsonResponse({"gracz tm": usertm, "user": request.user.discord_id})
+    # return JsonResponse({"gracz tm": usertm, "user": request.user.discord_id})
+    return redirect(redirect_main_url)
 
 
 def exchange_code_trackmania(code: str):
