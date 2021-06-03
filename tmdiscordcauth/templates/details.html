@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="display-4  text-light mb-2 mt-5"><strong>Hi {{ request.user.username }}</strong> </h1>
+<p class="lead  text-light mb-3">
+    Click on the link button to finish authorization.
+    Is related: {{ is_related }} with {{ find_relation.display_name }}
+</p>
+<p>
+    {% if is_related %}
+    <a href="#" class="btn btn-outline-light btn-round m-2 ms-0  btn-lg  ">unlink </a>
+    {% else %}
+    <a href="http://localhost:8000/oauth2/logintm" class="btn btn-outline-light btn-round m-2 ms-0  btn-lg  ">Link </a>
+    {% endif %}
+    <a href="https://github.com/Tomczan/tm-discord-oauth2" class="btn bg-light btn-round m-2   btn-lg btn-rised">
+        <i class="fab fa-github-square"></i></i> GitHub</a>
+</p>
+{% endblock %}

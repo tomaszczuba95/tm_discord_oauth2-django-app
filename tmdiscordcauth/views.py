@@ -9,24 +9,29 @@ import base64
 import os
 import http.client
 import json
+from rest_framework import viewsets
+from .serializers import TrackmaniaUserSerializer
+from decouple import config
 # Create your views here.
-
 auth_url_discord = "https://discord.com/api/oauth2/authorize?client_id=" + \
-    os.environ['DISCORD_CLIENT_ID'] + \
+    config('DISCORD_CLIENT_ID') + \
     "&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2%2Flogin%2Fredirect&response_type=code&scope=identify"
 auth_url_tm = "https://api.trackmania.com/oauth/authorize?client_id=" + \
-    os.environ['TRACKMANIA_API_ID'] + \
+    config('TRACKMANIA_API_ID') + \
     "&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2%2Flogintm%2Fredirect&response_type=code&scope=&state=test"
-redirect_main_url = "http://127.0.0.1:8000/oauth2/login/redirect"
+home_url = "http://127.0.0.1:8000/oauth2/login/redirect"
 
 
-def home(request):
-    return JsonResponse({"msg": "Siema"})
+# API
+
+class TrackmaniaUserViewSet(viewsets.ModelViewSet):
+    queryset = TrackmaniaUser.objects.all()
+    serializer_class = TrackmaniaUserSerializer
 
 # DISCORD
 
 
-@login_required(login_url="/oauth2/login")
+@login_required(login_url="http://127.0.0.1:8000")
 def get_authenticated_user(request):
     return JsonResponse({"msg": "Authenticated", "user": request.user.discord_id})
 
@@ -36,31 +41,30 @@ def discord_login(request: HttpRequest):
 
 
 def discord_login_redirect(request):
-    code = request.GET.get('code')
-    print(code)
-    user = exchange_code_discord(code)
-    discord_user = authenticate(request, user=user)
-    discord_user = list(discord_user).pop()
-    login(request, discord_user)
-
+    try:
+        code = request.GET.get('code')
+        user = exchange_code_discord(code)
+        discord_user = authenticate(request, user=user)
+        discord_user = discord_user.first()
+        login(request, discord_user)
+    except:
+        print("Couldnt find a code")
     find_relation = TrackmaniaUser.objects.filter(linked_discord=request.user)
     if len(find_relation) == 0:
         is_related = False
     else:
         is_related = True
         find_relation = list(find_relation).pop()
-    # db_connections =
     # return redirect(trackmania_login)
-    return render(request, 'base.html', {'discord_user': discord_user,
-                                         'is_related': is_related,
-                                         'find_relation': find_relation})
+    return render(request, 'details.html', {'is_related': is_related,
+                                            'find_relation': find_relation})
 
 
 def exchange_code_discord(code: str):
     data = {
         # https://discord.com/developers/applications
-        "client_id": os.environ['DISCORD_CLIENT_ID'],
-        "client_secret": os.environ['DISCORD_CLIENT_SECRET'],
+        "client_id": config('DISCORD_CLIENT_ID'),
+        "client_secret": config('DISCORD_CLIENT_SECRET'),
         "grant_type": "authorization_code",
         "code": code,
         "redirect_uri": "http://localhost:8000/oauth2/login/redirect",
@@ -85,11 +89,12 @@ def exchange_code_discord(code: str):
 # TRACKMANIA
 
 
-@login_required(login_url="/oauth2/login")
+@login_required(login_url="http://127.0.0.1:8000")
 def trackmania_login(request: HttpRequest):
     return redirect(auth_url_tm)
 
 
+@login_required(login_url="http://127.0.0.1:8000")
 def trackmania_login_redirected(request):
     code = request.GET.get('code')
     print(code)
@@ -102,15 +107,15 @@ def trackmania_login_redirected(request):
     new_tm_user = TrackmaniaUser.objects.create_new_trackmania_user(request,
                                                                     usertm)
     # return JsonResponse({"gracz tm": usertm, "user": request.user.discord_id})
-    return redirect(redirect_main_url)
+    return render(request, "finish.html")
 
 
 def exchange_code_trackmania(code: str):
     data = {
         # https://doc.trackmania.com/web-services/auth/
         "grant_type": "authorization_code",
-        "client_id": os.environ['TRACKMANIA_API_ID'],
-        "client_secret": os.environ['TRACKMANIA_API_SECRET'],
+        "client_id": config('TRACKMANIA_API_ID'),
+        "client_secret": config('TRACKMANIA_API_SECRET'),
         "code": code,
         "redirect_uri": "http://localhost:8000/oauth2/logintm/redirect",
     }

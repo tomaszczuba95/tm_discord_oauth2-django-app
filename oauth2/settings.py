@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zxbc#^)ji=l$ex40)rwaw8-erin^#1y^$6s$bpk6f&^(6d)&qb'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+#DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tm-discord-authorization.herokuapp.com', 'localhost:8000']
 
 
 # Application definition
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tmdiscordcauth.apps.TmdiscordcauthConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -74,18 +77,19 @@ WSGI_APPLICATION = 'oauth2.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'OAUTH2_TM_DB',
-        'USER': 'postgres',
-        'PASSWORD': 'Emdziaki123',
+        'USER': config('db_local_user'),
+        'PASSWORD': config('db_local_password'),
         'HOST': 'localhost',
         'PORT': '5432'
     }
 }
-
+'''
+DATABASES = {'default': config('DATABASE_URL')}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -134,5 +138,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Custom Django Authentication
 AUTHENTICATION_BACKENDS = [
     'tmdiscordcauth.auth.DiscordAuthBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
 ]

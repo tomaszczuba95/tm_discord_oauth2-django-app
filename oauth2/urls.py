@@ -14,18 +14,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from tmdiscordcauth import views
+from rest_framework import routers
+from tmdiscordcauth.views import TrackmaniaUserViewSet
+
+router = routers.DefaultRouter()
+router.register(r'api', TrackmaniaUserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/user', views.get_authenticated_user,
          name='get_authenticated_user'),
-    path('oauth2', views.home, name="oauth2"),
     path('', views.discord_login, name="oauth_discord_login"),
     path('oauth2/logintm', views.trackmania_login, name="oauth_tm_login"),
     path('oauth2/login/redirect',
          views.discord_login_redirect, name="discord_redirect"),
     path('oauth2/logintm/redirect',
          views.trackmania_login_redirected, name="tm_redirect"),
+    path('', include(router.urls)),
 ]
