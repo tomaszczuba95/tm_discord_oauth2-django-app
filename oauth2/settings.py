@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 from decouple import config
-
+import dj-database-url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -86,10 +86,22 @@ DATABASES = {
         'PASSWORD': config('db_local_password'),
         'HOST': 'localhost',
         'PORT': '5432'
+        'CONN_MAX_AGE': 500
     }
 }
 '''
-DATABASES = {'default': config('DATABASE_URL')}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd82bp79n30otlv',
+        'USER': config('db_user'),
+        'PASSWORD': config('db_password'),
+        'HOST': 'ec2-3-234-85-177.compute-1.amazonaws.com',
+        'PORT': '5432'
+    }
+}
+DATABASES['default'] = dj_database_url.config(
+    conn_max_age=600, ssl_require=True)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
