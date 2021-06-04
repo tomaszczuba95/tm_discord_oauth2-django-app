@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import dj_database_url
 from pathlib import Path
 import os
 from decouple import config
@@ -28,7 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = False
 #DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['tm-discord-authorization.herokuapp.com', 'localhost:8000']
+ALLOWED_HOSTS = ['tm-discord-authorization.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -77,7 +78,7 @@ WSGI_APPLICATION = 'oauth2.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -100,7 +101,9 @@ DATABASES = {
         'PORT': '5432'
     }
 }
-
+'''
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
