@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'oauth2.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -87,10 +87,9 @@ DATABASES = {
         'PASSWORD': config('db_local_password'),
         'HOST': 'localhost',
         'PORT': '5432'
-        'CONN_MAX_AGE': 500
     }
 }
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
