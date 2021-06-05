@@ -27,7 +27,7 @@ auth_url_tm_local = "https://api.trackmania.com/oauth/authorize?client_id=" + \
 
 auth_url_tm = "https://api.trackmania.com/oauth/authorize?client_id=" + \
     config('TRACKMANIA_API_ID') + \
-    "&redirect_uri=https%3A%2F%2Ftm-discord-authorization.herokuapp.com%2Foauth%2Flogintm%2Fredirect&response_type=code&scope=&state=tm"
+    "&redirect_uri=https%3A%2F%2Ftm-discord-authorization.herokuapp.com%2Foauth2%2Flogintm%2Fredirect&response_type=code&scope=&state=tm"
 
 home_url = "http://127.0.0.1:8000/oauth2/login/redirect"
 
