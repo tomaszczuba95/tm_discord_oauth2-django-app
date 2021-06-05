@@ -51,20 +51,22 @@ def discord_login(request: HttpRequest):
 
 
 def discord_login_redirect(request):
+    code = request.GET.get('code')
+    user = exchange_code_discord(code)
+    discord_user = authenticate(request, user=user)
+    discord_user = discord_user.first()
+    login(request, discord_user)
     try:
-        code = request.GET.get('code')
-        user = exchange_code_discord(code)
-        discord_user = authenticate(request, user=user)
-        discord_user = discord_user.first()
-        login(request, discord_user)
-    except:
-        print("Couldnt find a code")
-    find_relation = TrackmaniaUser.objects.filter(linked_discord=request.user)
-    if len(find_relation) == 0:
-        is_related = False
-    else:
-        is_related = True
+        find_relation = TrackmaniaUser.objects.filter(
+            linked_discord=request.user)
+        if len(find_relation) == 0:
+            is_related = False
+        else:
+            is_related = True
         find_relation = list(find_relation).pop()
+    except:
+        is_related = False
+        find_relation = "Couldnt find a relation"
     # return redirect(trackmania_login)
     return render(request, 'details.html', {'is_related': is_related,
                                             'find_relation': find_relation})
