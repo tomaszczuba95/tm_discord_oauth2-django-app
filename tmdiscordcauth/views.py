@@ -131,7 +131,7 @@ def exchange_code_trackmania(code: str):
         "client_secret": config('TRACKMANIA_API_SECRET'),
         "code": code,
         # "redirect_uri": "http://localhost:8000/oauth2/logintm/redirect",
-        "redirect_uri": "https://tm-discord-authorization.herokuapp.com/logintm/redirect",
+        "redirect_uri": "https://tm-discord-authorization.herokuapp.com/oauth2/logintm/redirect",
     }
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
