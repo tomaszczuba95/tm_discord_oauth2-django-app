@@ -150,3 +150,11 @@ def exchange_code_trackmania(code: str):
     user = response.json()
     print(user)
     return user
+
+
+@login_required(login_url="https://tm-discord-authorization.herokuapp.com/")
+def trackmania_unlink(request):
+    user_id = [request.user.discord_id]
+    instance = TrackmaniaUser.objects.get(linked_discord=user_id)
+    instance.delete()
+    return render(request, "finish.html")

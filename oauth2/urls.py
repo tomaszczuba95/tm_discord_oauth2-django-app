@@ -32,5 +32,6 @@ urlpatterns = [
          views.discord_login_redirect, name="discord_redirect"),
     path('oauth2/logintm/redirect',
          views.trackmania_login_redirected, name="tm_redirect"),
+    path('unlink', views.trackmania_unlink, name="unlink"),
     path('', include(router.urls)),
 ]
