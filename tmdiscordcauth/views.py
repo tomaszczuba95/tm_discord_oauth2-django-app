@@ -38,11 +38,11 @@ class TrackmaniaUserViewSet(viewsets.ModelViewSet):
     queryset = TrackmaniaUser.objects.all()
     serializer_class = TrackmaniaUserSerializer
 
-# Login
+# First page
 
 
-def login(request):
-    return render(request, 'login.html')
+def first_page(request):
+    return render(request, 'first_page.html')
 
 # DISCORD
 
@@ -61,7 +61,7 @@ def discord_login_redirect(request):
     user = exchange_code_discord(code)
     discord_user = authenticate(request, user=user)
     discord_user = discord_user.first()
-    login(request, discord_user)
+    login(discord_user)
     try:
         find_relation = TrackmaniaUser.objects.filter(
             linked_discord=request.user)
