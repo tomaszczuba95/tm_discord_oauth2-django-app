@@ -61,7 +61,7 @@ def discord_login_redirect(request):
     user = exchange_code_discord(code)
     discord_user = authenticate(request, user=user)
     discord_user = discord_user.first()
-    login(request, user=discord_user)
+    login(request, discord_user)
     try:
         find_relation = TrackmaniaUser.objects.filter(
             linked_discord=request.user)
