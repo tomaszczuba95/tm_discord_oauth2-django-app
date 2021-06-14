@@ -42,7 +42,7 @@ class TrackmaniaUserViewSet(viewsets.ModelViewSet):
 
 
 def first_page(request):
-    return render(request, 'first_page.html')
+    return render('first_page.html')
 
 # DISCORD
 

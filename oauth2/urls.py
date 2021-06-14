@@ -26,7 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/user', views.get_authenticated_user,
          name='get_authenticated_user'),
-    path('', views.login, name="first login"),
+    path('', views.first_page, name="first_page"),
     path('home/', views.discord_login, name="oauth_discord_login"),
     path('home/oauth2/logintm', views.trackmania_login, name="oauth_tm_login"),
     path('home/oauth2/login/redirect',
@@ -34,5 +34,5 @@ urlpatterns = [
     path('home/oauth2/logintm/redirect',
          views.trackmania_login_redirected, name="tm_redirect"),
     path('home/unlink', views.trackmania_unlink, name="unlink"),
-    path('home/', include(router.urls)),
+    path('', include(router.urls)),
 ]
