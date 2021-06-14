@@ -34,5 +34,5 @@ urlpatterns = [
     path('home/oauth2/logintm/redirect',
          views.trackmania_login_redirected, name="tm_redirect"),
     path('home/unlink', views.trackmania_unlink, name="unlink"),
-    path('', include(router.urls)),
+    path('home/', include(router.urls)),
 ]
