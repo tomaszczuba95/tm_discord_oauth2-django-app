@@ -19,7 +19,7 @@ auth_url_discord_local = "https://discord.com/api/oauth2/authorize?client_id=" +
 
 auth_url_discord = "https://discord.com/api/oauth2/authorize?client_id=" + \
     config('DISCORD_CLIENT_ID') + \
-    "&redirect_uri=https%3A%2F%2Ftm-discord-authorization.herokuapp.com%2Foauth2%2Flogin%2Fredirect&response_type=code&scope=identify"
+    "&redirect_uri=https%3A%2F%2Ftm-discord-authorization.herokuapp.com%2Fhome%2Foauth2%2Flogin%2Fredirect&response_type=code&scope=identify"
 
 auth_url_tm_local = "https://api.trackmania.com/oauth/authorize?client_id=" + \
     config('TRACKMANIA_API_ID') + \
@@ -27,7 +27,7 @@ auth_url_tm_local = "https://api.trackmania.com/oauth/authorize?client_id=" + \
 
 auth_url_tm = "https://api.trackmania.com/oauth/authorize?client_id=" + \
     config('TRACKMANIA_API_ID') + \
-    "&redirect_uri=https%3A%2F%2Ftm-discord-authorization.herokuapp.com%2Foauth2%2Flogintm%2Fredirect&response_type=code&scope=&state=tm"
+    "&redirect_uri=https%3A%2F%2Ftm-discord-authorization.herokuapp.com%2Fhome%2Foauth2%2Flogintm%2Fredirect&response_type=code&scope=&state=tm"
 
 home_url = "http://127.0.0.1:8000/oauth2/login/redirect"
 
@@ -43,10 +43,11 @@ class TrackmaniaUserViewSet(viewsets.ModelViewSet):
 
 def login(request):
     return render(request, 'login.html')
+
 # DISCORD
 
 
-@login_required(login_url="https://tm-discord-authorization.herokuapp.com/")
+@login_required(login_url="https://tm-discord-authorization.herokuapp.com/home")
 def get_authenticated_user(request):
     return JsonResponse({"msg": "Authenticated", "user": request.user.discord_id})
 
@@ -107,7 +108,7 @@ def exchange_code_discord(code: str):
 # TRACKMANIA
 
 
-@login_required(login_url="https://tm-discord-authorization.herokuapp.com/")
+@login_required(login_url="https://tm-discord-authorization.herokuapp.com/home")
 def trackmania_login(request: HttpRequest):
     return redirect(auth_url_tm)
 
