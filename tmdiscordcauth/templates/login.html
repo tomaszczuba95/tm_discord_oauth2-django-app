@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="display-4  text-light mb-2 mt-5"><strong>Discord authorization.</strong> </h1>
+<p class="lead  text-light mb-3">
+    Click the login button to give us access to your:<br>
+    - nickname<br>
+    - avatar<br>
+    - discord ID
+</p>
+<p>
+    <a href="https://tm-discord-authorization.herokuapp.com/home"
+        class="btn btn-outline-light btn-round m-2 ms-0  btn-lg  ">Login </a>
+    <a href="https://github.com/Tomczan/tm-discord-oauth2" class="btn bg-light btn-round m-2   btn-lg btn-rised">
+        <i class="fab fa-github-square"></i></i> GitHub</a>
+</p>
+{% endblock %}

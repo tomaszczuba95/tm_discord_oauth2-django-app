@@ -38,6 +38,11 @@ class TrackmaniaUserViewSet(viewsets.ModelViewSet):
     queryset = TrackmaniaUser.objects.all()
     serializer_class = TrackmaniaUserSerializer
 
+# Login
+
+
+def login(request):
+    return render(request, 'login.html')
 # DISCORD
 
 
@@ -66,7 +71,7 @@ def discord_login_redirect(request):
         find_relation = list(find_relation).pop()
     except:
         is_related = False
-        find_relation = "Couldnt find a relation"
+        find_relation = False
     # return redirect(trackmania_login)
     return render(request, 'details.html', {'is_related': is_related,
                                             'find_relation': find_relation})
@@ -80,7 +85,7 @@ def exchange_code_discord(code: str):
         "grant_type": "authorization_code",
         "code": code,
         # "redirect_uri": "http://localhost:8000/oauth2/login/redirect",
-        "redirect_uri": "https://tm-discord-authorization.herokuapp.com/oauth2/login/redirect",
+        "redirect_uri": "https://tm-discord-authorization.herokuapp.com/home/oauth2/login/redirect",
         "scope": "identify"
     }
     headers = {
@@ -131,7 +136,7 @@ def exchange_code_trackmania(code: str):
         "client_secret": config('TRACKMANIA_API_SECRET'),
         "code": code,
         # "redirect_uri": "http://localhost:8000/oauth2/logintm/redirect",
-        "redirect_uri": "https://tm-discord-authorization.herokuapp.com/oauth2/logintm/redirect",
+        "redirect_uri": "https://tm-discord-authorization.herokuapp.com/home/oauth2/logintm/redirect",
     }
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"

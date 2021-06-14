@@ -3,15 +3,19 @@
 {% block content %}
 <h1 class="display-4  text-light mb-2 mt-5"><strong>Hi {{ request.user.username }}</strong> </h1>
 <p class="lead  text-light mb-3">
-    Click on the link button to finish authorization.
-    Is related: {{ is_related }} with {{ find_relation.display_name }}
+    {% if is_related %}
+    Your discord is linked with {{ find_relation.display_name }}.<br>
+    If you want to unlink, click the unlink button
+    {% else %}
+    Click the link button to finish authorization.
+    {% endif %}
 </p>
 <p>
     {% if is_related %}
-    <a href="https://tm-discord-authorization.herokuapp.com/unlink"
-        class="btn btn-outline-light btn-round m-2 ms-0  btn-lg  ">unlink </a>
+    <a href="https://tm-discord-authorization.herokuapp.com/home/unlink"
+        class="btn btn-outline-light btn-round m-2 ms-0  btn-lg  ">Unlink </a>
     {% else %}
-    <a href="https://tm-discord-authorization.herokuapp.com/oauth2/logintm"
+    <a href="https://tm-discord-authorization.herokuapp.com/home/oauth2/logintm"
         class="btn btn-outline-light btn-round m-2 ms-0  btn-lg  ">Link </a>
     {% endif %}
     <a href="https://github.com/Tomczan/tm-discord-oauth2" class="btn bg-light btn-round m-2   btn-lg btn-rised">
