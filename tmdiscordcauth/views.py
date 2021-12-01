@@ -19,7 +19,7 @@ auth_url_discord_local = "https://discord.com/api/oauth2/authorize?client_id=" +
 
 auth_url_discord = "https://discord.com/api/oauth2/authorize?client_id=" + \
     config('DISCORD_CLIENT_ID') + \
-    "&redirect_uri=http%3A%2F%2Ftmranked.eu/%2Fhome%2Foauth2%2Flogin%2Fredirect&response_type=code&scope=identify"
+    "&redirect_uri=http%3A%2F%2Ftmranked.eu%2Fhome%2Foauth2%2Flogin%2Fredirect&response_type=code&scope=identify"
 
 auth_url_tm_local = "https://api.trackmania.com/oauth/authorize?client_id=" + \
     config('TRACKMANIA_API_ID') + \
@@ -27,7 +27,7 @@ auth_url_tm_local = "https://api.trackmania.com/oauth/authorize?client_id=" + \
 
 auth_url_tm = "https://api.trackmania.com/oauth/authorize?client_id=" + \
     config('TRACKMANIA_API_ID') + \
-    "&redirect_uri=http%3A%2F%2Ftmranked.eu/%2Fhome%2Foauth2%2Flogintm%2Fredirect&response_type=code&scope=&state=tm"
+    "&redirect_uri=http%3A%2F%2Ftmranked.eu%2Fhome%2Foauth2%2Flogintm%2Fredirect&response_type=code&scope=&state=tm"
 
 home_url = "http://127.0.0.1:8000/oauth2/login/redirect"
 
