@@ -86,7 +86,7 @@ def exchange_code_discord(code: str):
         "grant_type": "authorization_code",
         "code": code,
         # "redirect_uri": "http://localhost:8000/oauth2/login/redirect",
-        "redirect_uri": "https://http://www.tmranked.eu//home/oauth2/login/redirect",
+        "redirect_uri": "https://http://www.tmranked.eu/home/oauth2/login/redirect",
         "scope": "identify"
     }
     headers = {
