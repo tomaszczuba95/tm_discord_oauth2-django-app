@@ -29,7 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['tm-discord-authorization.herokuapp.com',
-                 '127.0.0.1', 'registration.tmranked.eu', 'tmranked.eu', 'www.tmranked.eu.']
+                 '127.0.0.1', 'registration.tmranked.eu', 'tmranked.eu', 'www.tmranked.eu']
 
 
 # Application definition
